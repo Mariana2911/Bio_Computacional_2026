@@ -1,0 +1,122 @@
+---
+title: "Análisis de ocurrencias GBIF - Género Amanita en Colombia (Taller 1)"
+author: "Mariana Areiza Sánchez"
+date: "2026-02-10"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    collapsed: true
+    smooth_scroll: true
+    theme: journal
+    highlight: kate
+    df_print: paged
+    code_folding: show
+  pdf_document: default
+---
+
+En Colombia, especialmente en zonas altoandinas cercanas a Medellín, el género Amanita es ecológicamente relevante por su papel como hongo ectomicorrízico, formando asociaciones simbióticas con árboles como el roble andino (_Quercus humboldtii_) y con especies introducidas de pino. A través de estas interacciones participa activamente en el intercambio de nutrientes, la dinámica del suelo y el funcionamiento de los ecosistemas forestales andinos. Además, el género tiene importancia científica debido a su diversidad, a la presencia de especies tanto nativas como introducidas y a su utilidad en estudios de biogeografía, ecología de micorrizas y cambios en comunidades fúngicas. También posee relevancia educativa y sanitaria, ya que incluye especies tóxicas y otras comestibles, lo que hace fundamental su correcta identificación.
+
+Realicé la búsqueda por medio de "ocurrencias" en GBIF, seleccioné únicamente a Colombia y en Nombre científico, coloqué Amanita (Fungi → Basidiomycota → Agaricomycetes → Agaricales → Amanitaceae) y seleccioné una zona bien definida de Colombia por medio de coordenadas, cerca a Medellín, obteniendo así 990 observaciones, las cuales fueron descargadas en archivo simple .CSV.
+
+
+# 1.Descargue de GBIF un grupo de organismos de interes (entre 100-1000 registros) 
+
+## Primero realicé la descarga de los datos de ocurrencia en parte de Colombia (Principalmente cerca a Medellín), de Amanita como género, obteniendo 990 observaciones.
+
+# 2. Genere una gráfica con la ocurrencia de este grupo (por ejemplo un barplot) y registre los comandos utilizados.
+
+## 2.1 Procedí con la creación de las tablas en R, para organizar la información obtenida de los datos de ocurrencia de Amanita.
+
+```{r} 
+
+# definimos como directorio de trabajo la carpeta creada
+setwd("C:/Users/marya/Bio_Computacional/Proyecto_A.muscaria")
+
+# leemos los datos descargados y guardados
+gbif_data <- read.csv(
+  "Datos_A.muscaria.csv",
+  row.names = NULL, #necesario para que no numere las filas 
+  stringsAsFactors = FALSE, 
+  sep = "\t" #la separación de columnas es tipo "tab"
+)
+
+#gbif_data <- read_csv("Datos_A.muscaria.csv")
+
+#Cuantas especies hay?
+tabla_sp <- table(gbif_data$species)
+```
+
+## 2.2 Luego de tener la tabla con los datos bien organizados, procedí con los gráficos que muestra Cuántas especies de este género (Amanita) se reportan en la base de datos específicamente en Colombia.
+
+```{r barplot}
+# Ajustar márgenes
+par(mar = c(10, 5, 4, 2))
+
+barplot(
+tabla_sp,
+las = 2, # etiquetas verticales
+col = "#EEAEEE",
+border = "#8B7B8B", 
+main = "Ocurrencias de Amanita por especie (GBIF)",
+ylab = "Número de registros",
+cex.names = 0.9, # tamaño de nombres en eje X
+cex.axis = 0.9, # tamaño de números
+cex.lab = 1.1, # tamaño etiquetas de ejes
+cex.main = 1.2 # tamaño del título
+)
+```
+
+
+La gráfica muestra el número de registros en GBIF para distintas especies del género Amanita y evidencia una clara dominancia _Amanita muscaria_, que concentra con gran diferencia la mayor cantidad de ocurrencias (muy por encima de 600), mientras que el resto de especies presentan valores considerablemente menores, en su mayoría por debajo de 60 registros. Esto sugiere un sesgo de muestreo y/o mayor facilidad de identificación de _A. muscaria_, probablemente debido a su morfología conspicua y amplia distribución, mientras que las demás especies podrían estar subregistradas o tener distribuciones más restringidas. En términos de datos de biodiversidad, la gráfica refleja más la intensidad de registro y documentación que necesariamente la abundancia real en campo.
+
+
+# 3. Usando comandos de linux, cree un directorio llamado "taller1", y dentro de este, los siguientes subdirectorios:
+
+## Luego creé el directorio principal llamado "taller1" en Linux (WSL) 
+
+
+mkdir taller1
+
+
+# 4. Subdirectorios "data" y "scripts"
+ 
+
+cd taller1
+
+mkdir data
+
+mkdir scripts
+
+ls
+
+# 5. data/ donde guardarás el archivo descargado de GBIF
+## Procedí a guardar el archivo descargado de GBIF "Datos_A.muscaria.csv" en el subdirectorio "data"
+ 
+
+cd taller1
+
+mv /home/marya/Biocomp_repo/Datos_A.muscaria.csv data/
+  
+ls
+
+
+# 6. Cuente las filas del documento descargado desde Linux
+## Utilizando la función wc -l, conté las líneas del archivo "Datos_A.muscaria.csv", dando como resultado que el archivo contiene 991 líneas; una corresponde al encabezado, por lo que hay 990 registros efectivos.
+
+
+cd data
+
+wc -l Datos_A.muscaria.csv
+
+991 Datos_A.muscaria.csv
+
+
+# 7. Finalmente, guardé el RMarkdown en el subdirectorio "scripts"
+
+cd taller1
+
+mv /home/marya/Biocomp_repo/Proyecto_Amanita_muscaria.Rmd scripts/
+  
+ls

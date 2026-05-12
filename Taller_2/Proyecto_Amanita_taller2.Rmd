@@ -1,0 +1,191 @@
+---
+title: "Diseño de primers - Género Amanita en Colombia (Taller 2)"
+author: "Mariana Areiza Sánchez"
+date: "2026-04-14"
+output: 
+  pdf_document: default
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    collapsed: true
+    smooth_scroll: true
+    theme: journal
+    highlight: kate
+    df_print: paged
+    code_folding: show
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Introducción
+
+La Quitina Sintasa (Chitin Synthase) es un marcador muy interesante para
+hongos, ya que es la enzima responsable de sintetizar la quitina, que es
+uno de los componentes principales de su pared celular. Esta molécula le
+da rigidez, forma y protección al hongo, siendo clave para su
+crecimiento y supervivencia.
+
+Al ser un gen funcional, suele tener regiones muy conservadas
+(especialmente en el sitio catalítico donde ocurre la síntesis de
+quitina), pero también presenta regiones más variables. Esto es súper
+útil porque permite tanto amplificar el gen en diferentes especies como
+diferenciarlas entre sí a nivel molecular.
+
+En el caso de especies del género Amanita, la quitina sintasa cumple un
+papel fundamental en la formación de estructuras como el micelio y el
+cuerpo fructífero que la “seta” que vemos. Además, participa en procesos
+de crecimiento y diferenciación celular, ayudando a mantener la
+integridad de la pared celular frente a cambios del ambiente. Esto es
+especialmente importante porque muchas especies de Amanita viven en
+interacción con plantas (micorrizas), por lo que necesitan una pared
+celular funcional para adaptarse y establecer estas relaciones
+simbióticas.
+
+## 1. Secuencias de las especies seleccionadas
+
+Como lo explico anteriormente, elegí el gen que sintetizará la quitina
+sintasa, elegí las especies *Amanita muscaria* y *Amanita abrupta* que
+tienen presencia en Colombia según los resultados de mi taller anterior.
+
+Realicé la búsqueda en el NCBI de los genes chitin synthase de cada
+especie con secuencias CDS y se descargaron en formato FASTA por medio
+de Apolo.
+
+![](A.%20muscaria_seq.png)
+
+![](A.%20abrupta_seq.png)
+
+En Apolo creé un archivo .fa y agregué cada secuencia FASTA encontrada
+para cada especie.
+
+![](archivo%20.fa.png)
+
+## 2. Alineamiento
+
+Luego de tener las secuencias en formato FASTA, procedí a realizar el
+alineamiento utilizando ClustalW, ya que es una herramienta confiable
+para comparar secuencias homólogas. Además, permite identificar de
+manera clara regiones conservadas y variables, lo que resulta adecuado
+para el tipo de gen que elegí.
+
+Esto lo realicé con la ayuda de un slurm llamado
+Taller2_Alineamientos.sh.
+
+![](alineamientos.png)
+
+Obtuve 2 archivos, uno .dnd y otro .phy
+
+![](resultaod.png)
+
+![](alineamiento.png)
+
+En estos indentiqué Indels (Gaps), en la segunda línea se observa
+GAGGTTTG-- vs GAGGTTGGGA. Esto significa que *A. muscaria* tiene una
+pequeña inserción. Esto es muy importante para el diseño de primers
+porque si se colocan los primers rodeando esa zona, los productos de PCR
+tendrán tamaños distintos. También identifiqué regiones conservadas, a
+partir de la posición 11 (GGGTGATGAA...), ambas son idénticas por un
+buen tramo, estos son los mejores sitios para que los primers se peguen
+con fuerza, es decir que tengan buena sensibilidad.
+
+## 3. Diseño de primers
+
+### - Primer *Amanita abrupta*
+
+![](primer_a.abrupta.png)
+
+\>AB105094.1 *Amanita abrupta* chs gene for chitin synthase, partial cds
+
+**Primer Forward →** ATCTGTCGACCCAAAGCCAC (Posición empieza en 131 para
+en 150)
+
+**Primer Reverse →** TAAGTTCGCACCGCAACAAC (Posición empieza en 451 para
+en 432)
+
+**Longitud del fragmento esperado →** 321
+
+![](resultado_a.abrupta.png)
+
+### - Primer *Amanita muscaria*
+
+Seleccioné y organicé los datos de acuerdo a lo visto en clase.
+
+![](primer_a.muscaria.png)
+
+\>AB105102.1 *Amanita muscaria* chs gene for chitin synthase, partial
+cds
+
+**Primer Forward →** ATCCGCTCAATCTCGTTCCC (Posición empieza en 178 para
+en 197)
+
+**Primer Reverse →** TTACGTAGCTTCTTCCCGCC (Posición empieza en 529 para
+en 510)
+
+**Longitud del fragmento esperado →** 352
+
+![](resultado_a.muscaria.png)
+
+Se diseñaron dos pares de primers específicos dirigidos al gen de la
+quitina sintasa. El primer par, orientado a *A. abrupta*, genera un
+fragmento de 321 pb, mientras que el segundo par, específico para *A.
+muscaria*, produce un amplicón de 352 pb.
+
+Como estrategia de diferenciación, aproveché la presencia de
+polimorfismos en los sitios de anclaje de los primers entre ambas
+especies. Esto permite implementar una PCR, en la que el par específico
+para *A. muscaria* amplifica un fragmento de 352 pb únicamente en
+presencia de ADN de esta especie, evidenciando alta especificidad y
+facilitando su distinción frente a *A. abrupta*.
+
+## 4. Verifica sensibilidad y especificidad
+
+Para confimar la sensibilidad y escificidad de los primers, utilicé una
+prueba in sílico en el NCBI, para esto seleccioné únicamente el género
+Amanita y coloqué mis primers.
+
+### - Prueba *Amanita abrupta*
+
+![](validacion_a.abrupta.png)
+
+![](resul_val_a.abrupta.png)
+
+### - Prueba *Amanita muscaria*
+
+![](validacion_a.muscaria.png)
+
+![](resultado_a.muscaria.png)
+
+Como lo decía anteriormente, realicé la validación *in silico* de los
+primers utilizando la herramienta Primer-BLAST del NCBI, con el fin de
+evaluar su sensibilidad y especificidad frente a secuencias del género
+Amanita.
+
+Confirmé la sensibilidad mediante la alineación exacta (100% de
+identidad) de los primers con la secuencia molde en las posiciones
+correspondientes (131–451 para *Amanita abrupta* y 178–529 para *Amanita
+muscaria*). Además, no se observaron desajustes o *mismatches* en el
+extremo 3’, lo cual es fundamental para garantizar un correcto annealing
+y una buena extensión por parte de la ADN polimerasa y, por tanto, una
+amplificación eficiente.
+
+Para *Amanita muscaria*, el par de primers amplifica un fragmento de 352
+pb dentro del gen de la quitina sintasa, confirmando su adecuada
+capacidad de reconocimiento del blanco. Por su parte, el par diseñado
+para *Amanita abrupta* genera un amplicón de 321 pb, un tamaño óptimo
+para su visualización mediante un gel de electroforesis.
+
+En cuanto a la especificidad, al contrastar los primers contra la base
+de datos restringida al género Amanita, el programa reportó que no se
+encontraron otros blancos potenciales. Esto indica que los primers son
+altamente específicos para sus secuencias objetivo y no presentan
+amplificación cruzada con otras especies del género.
+
+En conjunto, estos resultados demuestran que el diseño de primers es
+tanto sensible como específico, permitiendo la diferenciación molecular
+entre *Amanita muscaria* y *Amanita abrupta*. Asimismo, el uso del gen
+de la quitina sintasa como marcador molecular, combinado con
+herramientas bioinformáticas, constituye una estrategia robusta que
+supera las limitaciones de la identificación morfológica tradicional
+dentro del género *Amanita*.
