@@ -1,0 +1,163 @@
+---
+title: "ExamenFinal_MarianaAreiza"
+author: "Mariana Areiza Sánchez"
+date: "2026-05-12"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+**Preguntas**
+
+**1. Crea una carpeta para el examen llamada** *(0.1 pts)*
+
+`mkdir Examen_Mariana`
+
+**2. Descarga la secuencia mystery_seq.fasta** *(0.2 pts)*
+
+`wget https://raw.githubusercontent.com/lauraalazar/BiologiaComputacional/refs/heads/main/mystery_seq.fasta`
+
+`cat mystery_seq.fasta`
+
+![](Cat mystery.png)
+
+**3. ¿Cuál es la longitud del gen en pares de bases?** *(0.2 pts)*
+
+`grep -v ">" mystery_seq.fasta | tr -d '\n' | wc -c`
+
+utilicé este ya que grep -v "\>" me elimina el encabezado FASTA, tr -d '\n' elimina saltos de línea y wc -c me cuenta los carácteres que en este caso serían las bases.
+
+![](len.png)
+
+**4. ¿Cuál es la secuencia y longitud en aminoácidos?** *(0.5 pts)*
+
+En Apolo creé un archivo llamado Traduccion.sh
+
+`nano Traduccion.sh`
+
+Y en este coloqué el siguiente código, lo primero que hace este es transcribir de ADN a ARN y luego realiza la traducción aminoácidos
+
+`from Bio.Seq import Seq`
+
+`from Bio import SeqIO`
+
+`Leer la secuencia desde el FASTA`
+
+`record = SeqIO.read("mystery_seq.fasta", "fasta")`
+
+`mi_secuencia = record.seq`
+
+`Transcripción a ARN`
+
+`arn = mi_secuencia.transcribe()`
+
+`print("ARN:", arn)`
+
+`Traducción a proteína`
+
+`proteina = mi_secuencia.translate()`
+
+`print("Proteína:", proteina)`
+
+`Longitud en aminoácidos`
+
+`print("Longitud proteína:", len(proteina))`
+
+Luego creé un slurm para poder enviar a correr el código
+
+`create_slurm # Lo llamé Slurm_Traducción.sh`
+
+Y dentro de este coloqué el archivo creado anteriormente
+
+`python3 Traduccion.sh`
+
+![](tradu.png)
+
+La longitud de la proteína resultante fue de 839 aa.
+
+**5. ¿A qué genes reportados se parece?** *(0.5 pts)*
+
+Para resolver este punto, utilicé la herramienta del NCBI BLASTp porque la secuencia de estudio corresponde a una proteína de 839 aminoácidos, esta herramienta me permite comparar secuencias proteícas contra bases de datos de proteínas conocidas.
+
+Resultados del BLASTp:
+
+![](blast.png)
+
+Mi proteína de 839 aa presenta Query cover de 100% es decir que toda la proteína alineó, E-value de 0.0 es decir que coinciden muy bien y la Identidad fue del 99.88% al 100% es decir que son prácticamente idénticas.
+
+Los mejores tres hits obtenidos fueron:
+
+- Hit 1: DNA topoisomerase (ATP-hydrolyzing) subunit A de *Mycobacterium tuberculosis* con un 99.88% de identidad y un E-value de 0.0.
+
+- Hit 2: DNA topoisomerase (ATP-hydrolyzing) subunit A (multispecies *Mycobacterium*) con un 100% identidad y un E-value 0.0.
+
+- Hit 3: DNA gyrase subunit A (GyrA) de *Mycobacterium tuberculosis* con un 99.88% de identidad y un E-value de 0.0.
+
+**6. ¿Cuál es el organismo de origen más probable?** *(0.5 pts)*
+
+Según los resultados obtenidos del punto anterior, el organismo de origen más probable para mi secuencia misterio es *Mycobacterium tuberculosis.*
+
+Puedo concluir esto porque los mejores hits del BLASTp presentan 100% de cobertura, E-value de 0.0 y una identidad muy alta (99.76% – 100%), además todos fueron asignados a proteínas de *Mycobacterium*, además dentro del BLASTp no hay coincidencias con otros organismos.
+
+**7. Recupera mínimo 5 secuencias homólogas, alinéalas y construye un árbol filogenético** *(1.0 pts)*
+
+De acuerdo con el BLAST resultante, elegí estas 5 especies con secuencias homólogas de gyrase subunit, las especies elegidas fueron:
+
+- WP_044509089.1 DNA gyrase subunit A [*Mycobacterium simiae*]
+
+- WP_277224835.1 DNA gyrase subunit A [*Mycolicibacterium hassiacum*]
+
+- WP_134069706.1 DNA gyrase subunit A [*Mycobacteroides salmoniphilum*]
+
+- MDQ1319073.1 MAG: gyrase subunit [*Actinomycetota bacterium*]
+
+- MGL4306737.1 MAG: DNA gyrase subunit A [*Mycobacteriaceae bacterium*]
+
+Las alineé y creé el árbol filogenético utilizando el siguiente código en WSL
+
+`mafft --auto Secuencias.fasta > secuencias_alineadas.fasta`
+
+`iqtree2 -s secuencias_alineadas.fasta -bb 1000 -m MFP`
+
+En Phylo.io pude visualizar el archivo secuencias_alineadas.fasta.contree, resultando el siguiente árbol
+
+![](arbol.png)
+
+**8. ¿Crees que este gen puede ser un marcador filogenético? ¿Por qué sí o por qué no?** *(1.0 pts)*
+
+Creo que sí, que el gen DNA gyrase subunit A (GyrA) puede utilizarse como marcador filogenético en bacterias, ya que es un gen esencial y funcionalmente conservado, lo que permite su comparación entre organismos. Al mismo tiempo, presenta suficiente variabilidad en regiones específicas para discriminar entre especies cercanas.
+
+Sin embargo, no es un marcador universal como el 16S, por lo que creería que su uso sería más complementario que estándar. En comparación con el 16S, el GyrA ofrece mayor resolución a nivel de especie en ciertos grupos bacterianos, como *Mycobacterium*, aunque con menor universalidad y estandarización filogenética.
+
+El árbol filogenético que obtuve respalda esta utilidad, ya que permite observar agrupaciones coherentes dentro del orden Mycobacteriales, con separación clara entre especies como *Mycobacterium simiae*, *Mycolicibacterium hassiacum* y *Mycobacteroides salmoniphilum*. Esto indica que, a pesar de cumplir una función biológica conservada (el control del superenrollamiento del ADN), las variaciones en su secuencia de aminoácidos contienen señal evolutiva suficiente para reconstruir relaciones filogenéticas consistentes.
+
+**9. Diseña un par de primers para amplificar un fragmento de esta secuencia** *(1.0 pts)*
+
+Para diseñar los primers, utilicé la herramienta Primer Blast del NCBI, copié la secuencia misterio en nucleotidos y seleccioné los parámetros que se observan a continuación.
+
+![](hacer prim.png)
+
+Este fue el resultado seleccionado como par de primers para *Mycobacterium tuberculosis:*
+
+![](primers.png)
+
+*→ Secuencia forward:* CAAGCTGACCGACTTCGACT
+
+*→ Secuencia reverse:* AGCAGATAGGTGCCTTCACG
+
+*→ Tm:* 60.04 (Forward) y 59.82 (Reverse)
+
+*→ %GC:* 55 para ambos
+
+*→ Longitud:* 20
+
+*→ Tamaño del amplicón esperado:* 267
+
+Luego de esto, con la ayuda de la herramienta Primer-Blast, realicé el análisis de sensibilidad, para esto coloqué los primers y obtuve este resultado.
+
+![](ana.png)
+
+En este caso, los primers presentan alineamientos perfectos en especies como *Mycobacterium tuberculosis*, *Mycobacterium canettii* y *Mycobacterium ostraviense*, lo que indica una alta capacidad de detección del gen de la ADN Topoisomerasa dentro de este grupo. La conservación de las regiones de unión en especies cercanas sugiere que el diseño es robusto y adecuado para amplificar miembros del complejo *Mycobacterium tuberculosis* y otras micobacterias relacionadas.
+
+Por otro lado, la especificidad corresponde a la capacidad de los primers para amplificar únicamente la secuencia objetivo y evitar amplificaciones inespecíficas. Aunque los primers fueron diseñados sobre *Mycobacterium tuberculosis*, también amplifican secuencias de *Mycobacterium ostraviense* y otras especies de *Mycobacterium*, generando productos del mismo tamaño y sin diferencias en las regiones de unión. Esto indica que la especificidad de mis primers es moderada, es decir, son altamente específicos para el género *Mycobacterium* y organismos cercanos, pero no exclusivos de *M. tuberculosis*. Desde un enfoque de detección de micobacterias, esto representa una ventaja; sin embargo, en un contexto diagnóstico clínico, podría limitar la discriminación precisa entre especies del género.
