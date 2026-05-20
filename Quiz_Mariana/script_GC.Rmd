@@ -1,0 +1,55 @@
+---
+title: "script_GC"
+author: "Mariana Areiza Sánchez"
+date: "2026-02-24"
+output: html_document
+---
+
+# 1. Primero se crea el data frame para que nos muestre los datos de A, T, C y G en columnas y por especie
+
+```{r setup, include=FALSE}
+datos<-data.frame( Especie = c("Lungfish","Shark","Frog","Salamander","Turtle","Alligator", "Falcon","Ostrich","Cod","Armadillo","Elephant","Human", "Dog","Wombat","Platypus","Amphioxus"), A = c(301,311,336,319,361,333,340,307,288,359,352,326,331,340,309,243),C = c(338,293,289,319,359,366,382,387,307,328,326,389,318,366,315,211),G = c(152,150,144,166,131,145,142,147,182,150,137,136,159,144,157,246),T = c(353,390,371,337,293,315,279,299,384,303,322,286,332,296,359,443))
+```
+
+
+# 2. Segundo, se suman las cantidades dadas por columna para obtener el total de los nucleótidos
+
+```{r}
+datos$total <- datos$A + datos$C + datos$G + datos$T
+print(datos$total)
+```
+
+# 3. Luego de esto, se calcula el %GC, con ayuda de la fórmula dada
+
+```{r}
+datos$GC <- (datos$G + datos$C) / datos$total * 100
+print(datos$GC)
+```
+
+# 4. Finalmente, generamos un barplot con los resultados obtenidos
+
+```{r}
+barplot(datos$GC,
+        names.arg = datos$Especie,
+        las = 2,
+        ylab = "% GC",
+        col = "#EEA2AD",
+        main = "Porcentaje de GC por especie")
+```
+
+
+# 5. Imprimimos la tabla para que quede en el RMarkdown
+```{r}
+print(datos)
+```
+
+# 6. Interpretación
+
+## ¿Cómo varía el %GC entre las especies analizadas?
+### El porcentaje de Guanina - Citocina varía aproximadamente entre 36% (Sienso el valor más bajo) y 47% (Siendo el valor más alto) entre las especies analizadas, lo que representa una diferencia o variación cercana a 9. Algunas especies como Ostrich y Human presentan valores altos (por encima de 46%, como 46.84% y 46.17%), mientras que otras como Frog y Shark muestran porcentajes más bajos, cercanos al 38%.
+
+## ¿Hay algún grupo taxonómico que muestre valores consistentemente más altos o más bajos?
+### Las aves (Falcon y Ostrich) muestran los valores más altos de %GC, mientras que los reptiles presentan valores relativamente altos e intermedios, sin embargo, los anfibios y algunos peces tienden a valores más bajos. En los mamíferos hay mayor variabilidad, aunque Human presenta un valor elevado comparable al de las aves.
+
+## ¿Qué podría explicar biológicamente esas diferencias? 
+### Las diferencias en %GC se pueden explicar por factores evolutivos y moleculares. Los pares de Guanina y Citocina poseen tres puentes de hidrógeno, lo que otorga mayor estabilidad al ADN. Además, procesos como diferencias en la organización genómica entre linajes pueden contribuir a que ciertos grupos acumulen mayor o menor contenido de GC a lo largo de la evolución.
