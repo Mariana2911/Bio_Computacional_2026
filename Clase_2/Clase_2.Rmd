@@ -1,0 +1,47 @@
+---
+title: "Análisis de ocurrencias GBIFF - Scraptotrigona"
+author: "Mariana Areiza Sánchez"
+date: "2026-01-27"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+Las abejas del género Scaptotrigona son abejas sin aguijón que se distribuyen en el neotrópico. Vamos a análizar los datos descargados de la plataforma GBIFF y guardados en la carpeta de la sesión de hoy 
+
+```{r scapto, echo=FALSE} 
+# definimos como directorio de trabajo la carpeta creada
+setwd("C:/Users/marya/Bio_Computacional/Clase_2")
+# leemos los datos descargados y guardados
+gbif_data <- read.csv(
+  "Gbiff_Scrapto_Colombia.csv",
+  row.names = NULL, #necesario para que no numere las filas 
+  stringsAsFactors = FALSE, 
+  sep = "\t" #la separación de columnas es tipo "tab"
+)
+
+#gbif_data <- read_csv("Gbiff_Scrapto_Colombia.csv")
+
+#Cuantas especies hay?
+tabla_sp <- table(gbif_data$species)
+```
+
+## Incluir Gráficos
+
+Cuantas especies de este género se reportan en la base de datos?  
+
+```{r barplot, echo=FALSE}
+#Graficar las especies
+par(mar = c(9, 4, 4, 2))
+barplot(
+  tabla_sp,
+  las = 2,
+  main = "Ocurrencias de Scaptotrigona por especie (GBIF)",
+  ylab = "Número de registros"
+)
+```
